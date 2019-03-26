@@ -12,24 +12,22 @@ app.listen(port, () => console.log(`Listening on port ${port}...`));
 
 
 app.get("/", function (req, res){
-	
-
-var ACCOUNT_SID = 'AC9908e96bc673c953048aeb673f254237';
-var API_KEY_SID = 'SK010b2bea9eac153bb87673699b7fb71c';
-var API_KEY_SECRET = 'gLVtcm0sZHaNBfTjQmensWw7fWaPrw6i';
-var accessToken = new AccessToken(
-  ACCOUNT_SID,
-  API_KEY_SID,
-  API_KEY_SECRET
-);
-accessToken.identity = 'example-user';
-var grant = new VideoGrant();
-grant.room = 'cool room';
-accessToken.addGrant(grant);
-var jwt = accessToken.toJwt();
-var ss;
-//console.log(jwt);
-connect(jwt, { name:'cool room', tracks: []}).then(room => {
+	var ACCOUNT_SID = 'AC9908e96bc673c953048aeb673f254237';
+	var API_KEY_SID = 'SK010b2bea9eac153bb87673699b7fb71c';
+	var API_KEY_SECRET = 'gLVtcm0sZHaNBfTjQmensWw7fWaPrw6i';
+	var accessToken = new AccessToken(
+	  ACCOUNT_SID,
+	  API_KEY_SID,
+	  API_KEY_SECRET
+	);
+	accessToken.identity = 'example-user';
+	var grant = new VideoGrant();
+	grant.room = 'cool room';
+	accessToken.addGrant(grant);
+	var jwt = accessToken.toJwt();
+	var ss;
+	//console.log(jwt);
+	connect(jwt, { name:'cool room', tracks: []}).then(room => {
 		console.log(`Successfully joined a Room: ${room}`);
 		room.on('participantConnected', participant => {
 			res.send(`A remote Participant connected: ${participant}`);
@@ -37,7 +35,28 @@ connect(jwt, { name:'cool room', tracks: []}).then(room => {
 	}, error => {
 		res.send(`Unable to connect to Room: ${error.message}`);
 	});
-
+});
+app.get("/media", function (req, res){
+	var ACCOUNT_SID = 'AC9908e96bc673c953048aeb673f254237';
+	var API_KEY_SID = 'SK010b2bea9eac153bb87673699b7fb71c';
+	var API_KEY_SECRET = 'gLVtcm0sZHaNBfTjQmensWw7fWaPrw6i';
+	var accessToken = new AccessToken(
+	  ACCOUNT_SID,
+	  API_KEY_SID,
+	  API_KEY_SECRET
+	);
+	accessToken.identity = 'user1';
+	var grant = new VideoGrant();
+	grant.room = 'cool room';
+	accessToken.addGrant(grant);
+	var jwt = accessToken.toJwt();
+	connect(jwt, {
+	  audio: true,
+	  name: 'cool room',
+	  video: { width: 640 }
+	}).then(room => {
+	  console.log(`Connected to Room: ${room.name}`);
+	});
 });
 /* const room =  connect(jwt, { tracks: [] });
 let localVideoTrack;
