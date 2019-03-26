@@ -56,8 +56,6 @@ app.get("/media", function (req, res){
 	  video: { width: 640 }
 	}).then(room => {
 	  res.send(`Connected to Room: ${room.name}`);
-	}), error => {
-		res.send(`Unable to connect to Room: ${error.message}`);
 	});
 });
 /* const room =  connect(jwt, { tracks: [] });
