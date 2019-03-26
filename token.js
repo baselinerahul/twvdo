@@ -10,8 +10,21 @@ app.use(express.json());
 const port = process.env.PORT || 3000;
 app.listen(port, () => console.log(`Listening on port ${port}...`));
 
+var ACCOUNT_SID = 'AC9908e96bc673c953048aeb673f254237';
+	var API_KEY_SID = 'SK010b2bea9eac153bb87673699b7fb71c';
+	var API_KEY_SECRET = 'gLVtcm0sZHaNBfTjQmensWw7fWaPrw6i';
+	var accessToken = new AccessToken(
+	  ACCOUNT_SID,
+	  API_KEY_SID,
+	  API_KEY_SECRET
+	);
+	accessToken.identity = 'user1';
+	var grant = new VideoGrant();
+	grant.room = 'cool room';
+	accessToken.addGrant(grant);
+	var jwt = accessToken.toJwt();
 
-app.get("/", function (req, res){
+/* app.get("/", function (req, res){
 	var ACCOUNT_SID = 'AC9908e96bc673c953048aeb673f254237';
 	var API_KEY_SID = 'SK010b2bea9eac153bb87673699b7fb71c';
 	var API_KEY_SECRET = 'gLVtcm0sZHaNBfTjQmensWw7fWaPrw6i';
@@ -57,7 +70,54 @@ app.get("/media", function (req, res){
 	}).then(room => {
 	  res.send(`Connected to Room: ${room.name}`);
 	});
+}); */
+
+
+const Video = require('twilio-video');
+app.get("/ss", function (req, res){
+Video.connect(jwt, { name: 'cool' }).then(room => {
+  console.log('Connected to Room "%s"', room.name);
+
+  room.participants.forEach(participantConnected);
+  room.on('participantConnected', participantConnected);
+
+  room.on('participantDisconnected', participantDisconnected);
+  room.once('disconnected', error => room.participants.forEach(participantDisconnected));
 });
+
+function participantConnected(participant) {
+  console.log('Participant "%s" connected', participant.identity);
+
+  const div = document.createElement('div');
+  div.id = participant.sid;
+  div.innerText = participant.identity;
+
+  participant.on('trackSubscribed', track => trackSubscribed(div, track));
+  participant.on('trackUnsubscribed', trackUnsubscribed);
+
+  participant.tracks.forEach(publication => {
+    if (publication.isSubscribed) {
+      trackSubscribed(div, publication.track);
+    }
+  });
+
+  document.body.appendChild(div);
+}
+
+function participantDisconnected(participant) {
+  console.log('Participant "%s" disconnected', participant.identity);
+  document.getElementById(participant.sid).remove();
+}
+
+function trackSubscribed(div, track) {
+  div.appendChild(track.attach());
+}
+
+function trackUnsubscribed(track) {
+  track.detach().forEach(element => element.remove());
+}
+});
+
 /* const room =  connect(jwt, { tracks: [] });
 let localVideoTrack;
 try {
