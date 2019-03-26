@@ -29,14 +29,27 @@ accessToken.addGrant(grant);
 var jwt = accessToken.toJwt();
 var ss;
 //console.log(jwt);
-connect(jwt, { name:'cool room', tracks: []}).then(room => {
+	/* connect(jwt, { name:'cool room', tracks: []}).then(room => {
 		console.log(`Successfully joined a Room: ${room}`);
 		room.on('participantConnected', participant => {
 			res.send(`A remote Participant connected: ${participant}`);
 		});
 	}, error => {
 		res.send(`Unable to connect to Room: ${error.message}`);
-	});
+	}); */
+	const room =  connect(jwt, { tracks: [] });
+	
+	let localVideoTrack;
+	try {
+	  localVideoTrack =  createLocalVideoTrack();
+	} catch (error) {
+	  res.send('Looks like you don\'t have a camera; proceeding without');
+	}
+
+	if (localVideoTrack) {
+	   room.localParticipant.publishTrack(localVideoTrack);
+	
+	}
 });
 /* const room =  connect(jwt, { tracks: [] });
 let localVideoTrack;
