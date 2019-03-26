@@ -25,13 +25,8 @@ var ACCOUNT_SID = 'AC9908e96bc673c953048aeb673f254237';
 	var jwt = accessToken.toJwt();
 
 	
-	let constraints = { audio: true, video: true };
-const { LocalAudioTrack, LocalVideoTrack } = require('twilio-video');
-const mediaStream = await navigator.mediaDevices.getUserMedia(constraints);
-const tracks = mediaStream.getTracks().map(track => track.kind === 'audio'? new LocalAudioTrack(track) : new LocalVideoTrack(track));
-//const room = await connect(jwt, { tracks });
-
-
+	
+	
 app.get("/", function (req, res){
 	var ACCOUNT_SID = 'AC9908e96bc673c953048aeb673f254237';
 	var API_KEY_SID = 'SK010b2bea9eac153bb87673699b7fb71c';
@@ -48,7 +43,7 @@ app.get("/", function (req, res){
 	var jwt = accessToken.toJwt();
 	var ss;
 	//console.log(jwt);
-	connect(jwt, { name:'cool room', {tracks}).then(room => {
+	connect(jwt, { name:'cool room', tracks: [{audio: true, video: false }]}).then(room => {
 		console.log(`Successfully joined a Room: ${room}`);
 		room.on('participantConnected', participant => {
 			res.send(`A remote Participant connected: ${participant}`);
