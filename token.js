@@ -11,7 +11,8 @@ const port = process.env.PORT || 3000;
 app.listen(port, () => console.log(`Listening on port ${port}...`));
 
 
-
+app.get("/", function (req, res){
+	
 
 var ACCOUNT_SID = 'AC9908e96bc673c953048aeb673f254237';
 var API_KEY_SID = 'SK010b2bea9eac153bb87673699b7fb71c';
@@ -26,14 +27,19 @@ var grant = new VideoGrant();
 grant.room = 'cool room';
 accessToken.addGrant(grant);
 var jwt = accessToken.toJwt();
+var ss;
 //console.log(jwt);
-
-
-app.get("/", function (req, res){
-	res.send("hello");
+connect(jwt, { name:'cool room', tracks: []}).then(room => {
+		console.log(`Successfully joined a Room: ${room}`);
+		room.on('participantConnected', participant => {
+			 ss = `A remote Participant connected: ${participant}`;
+		});
+	}, error => {
+		ss = `Unable to connect to Room: ${error.message}`;
+	});
+	res.send(ss);
 });
 /* const room =  connect(jwt, { tracks: [] });
-
 let localVideoTrack;
 try {
   localVideoTrack =  createLocalVideoTrack();
