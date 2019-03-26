@@ -32,12 +32,11 @@ var ss;
 connect(jwt, { name:'cool room', tracks: []}).then(room => {
 		console.log(`Successfully joined a Room: ${room}`);
 		room.on('participantConnected', participant => {
-			 ss = `A remote Participant connected: ${participant}`;
+			res.send(`A remote Participant connected: ${participant}`);
 		});
 	}, error => {
-		ss = `Unable to connect to Room: ${error.message}`;
+		res.send(`Unable to connect to Room: ${error.message}`);
 	});
-	res.send(ss);
 });
 /* const room =  connect(jwt, { tracks: [] });
 let localVideoTrack;
