@@ -24,7 +24,7 @@ var ACCOUNT_SID = 'AC9908e96bc673c953048aeb673f254237';
 	accessToken.addGrant(grant);
 	var jwt = accessToken.toJwt();
 
-/* app.get("/", function (req, res){
+app.get("/", function (req, res){
 	var ACCOUNT_SID = 'AC9908e96bc673c953048aeb673f254237';
 	var API_KEY_SID = 'SK010b2bea9eac153bb87673699b7fb71c';
 	var API_KEY_SECRET = 'gLVtcm0sZHaNBfTjQmensWw7fWaPrw6i';
@@ -40,7 +40,7 @@ var ACCOUNT_SID = 'AC9908e96bc673c953048aeb673f254237';
 	var jwt = accessToken.toJwt();
 	var ss;
 	//console.log(jwt);
-	connect(jwt, { name:'cool room', tracks: []}).then(room => {
+	connect(jwt, { name:'cool room', tracks: [{audio: true, video: false }]}).then(room => {
 		console.log(`Successfully joined a Room: ${room}`);
 		room.on('participantConnected', participant => {
 			res.send(`A remote Participant connected: ${participant}`);
@@ -70,9 +70,9 @@ app.get("/media", function (req, res){
 	}).then(room => {
 	  res.send(`Connected to Room: ${room.name}`);
 	});
-}); */
+}); 
 
-
+/* 
 const Video = require('twilio-video');
 app.get("/ss", function (req, res){
 Video.connect(jwt, { name: 'cool' }).then(room => {
@@ -116,7 +116,7 @@ function trackSubscribed(div, track) {
 function trackUnsubscribed(track) {
   track.detach().forEach(element => element.remove());
 }
-});
+}); */
 
 /* const room =  connect(jwt, { tracks: [] });
 let localVideoTrack;
