@@ -5,7 +5,7 @@ const path = require('path');
 var twilio = require('twilio');
 var AccessToken = require('twilio').jwt.AccessToken;
 var VideoGrant = AccessToken.VideoGrant;
-const { connect , createLocalVideoTrack} = require('twilio-video');
+const { connect ,  LocalAudioTrack, LocalVideoTrack} = require('twilio-video');
 app.use(express.json());
 const port = process.env.PORT || 3000;
 app.listen(port, () => console.log(`Listening on port ${port}...`));
@@ -43,7 +43,12 @@ app.get("/", function (req, res){
 	var jwt = accessToken.toJwt();
 	var ss;
 	//console.log(jwt);
-	connect(jwt, { name:'cool room', tracks: [{audio: true, video: false }]}).then(room => {
+	
+	const audioTracks = stream.getAudioTracks().map(track => new LocalAudioTrack(track));
+	const videoTracks = stream.getVideoTracks().map(track => new LocalVideoTrack(track));
+	const tracks = audioTracks.concat(videoTracks);
+
+	connect(jwt, { tracks }).then(room => {
 		console.log(`Successfully joined a Room: ${room}`);
 		room.on('participantConnected', participant => {
 			res.send(`A remote Participant connected: ${participant}`);
@@ -51,6 +56,15 @@ app.get("/", function (req, res){
 	}, error => {
 		res.send(`Unable to connect to Room: ${error.message}`);
 	});
+	
+	/* connect(jwt, { name:'cool room', tracks: [{audio: true, video: false }]}).then(room => {
+		console.log(`Successfully joined a Room: ${room}`);
+		room.on('participantConnected', participant => {
+			res.send(`A remote Participant connected: ${participant}`);
+		});
+	}, error => {
+		res.send(`Unable to connect to Room: ${error.message}`);
+	}); */
 });
 app.get("/media", function (req, res){
 	var ACCOUNT_SID = 'AC9908e96bc673c953048aeb673f254237';
