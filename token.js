@@ -44,11 +44,11 @@ app.get("/", function (req, res){
 	var ss;
 	//console.log(jwt);
 	
-	const audioTracks = stream.getAudioTracks().map(track => new LocalAudioTrack(track));
-	const videoTracks = stream.getVideoTracks().map(track => new LocalVideoTrack(track));
-	const tracks = audioTracks.concat(videoTracks);
-
+	const mediaStream =  navigator.mediaDevices.getUserMedia(constraints);
+const tracks = mediaStream.getTracks().map(track => track.kind === 'audio'
+  ? new LocalAudioTrack(track) : new LocalVideoTrack(track));
 	connect(jwt, { tracks }).then(room => {
+	//connect(jwt, { tracks }).then(room => {
 		console.log(`Successfully joined a Room: ${room}`);
 		room.on('participantConnected', participant => {
 			res.send(`A remote Participant connected: ${participant}`);
